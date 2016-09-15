@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/reset.css"> 
+	<link rel="stylesheet" type="text/css" href="assets/css/login.css">
+	<script type="text/javascript" src="node_modules\jquery\dist\jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/validationForRegistration.js"></script>
+	<script type="text/javascript" src="assets/js/validateLogin.js"></script>
+	<script type="text/javascript" src="assets/js/insert.js"></script>
+	<script type="text/javascript" src="assets/js/validateEmail.js"></script>
+	<script type="text/javascript" src="assets/js/getNewPass.js"></script>
+	<script type="text/javascript" src="assets/js/login.js"></script>
+	</head> 
+	<body>
+		<div id="container">
+			<div id="logo">
+				<img src="assets/images/logo-heroes.png">
+			</div>
+			<div id="form-login">
+				<form action="" method="POST">
+					<div>
+						<label for="login">USERNAME</label>
+						<input placeholder="USERNAME"  id="login" type="text">
+						<p id="paragraf-login"></p>
+					</div>
+					<div>
+						<label id="change-left" for="login">PASSWORD</label>
+						<input  placeholder="PASSWORD" id="password" type="password">
+						<p id="par-login-pass"></p>
+					</div>
+					<div id="anchor">
+						<a id="anchorOne" href="">Registration</a>
+						<a id="anchorTwo" href="">Forgot password?</a>
+					</div>
+					<div>
+						<button id="btn-login">LOGIN</button>
+					</div>
+				</form>
+			</div>
+			<div id="form-registration">
+				<form action="" method="POST">
+					<div id="user">
+						<label  for="login-registration">USERNAME</label>
+						<input placeholder="USERNAME"  id="login-registration" type="text">
+						<p id="paragraf-fname"></p>
+					</div>
+					<div>
+						<label id="change-left" for="password-registration">PASSWORD</label>
+						<input placeholder="PASSWORD"  id="password-registration" type="password">
+						<p id="paragraf-pass"></p>
+					</div>
+					<div>
+						<label id="change-left" for="confirm-password-registration">CONFIRM-PASSWORD</label>
+						<input  placeholder="RE-PASSWORD" id="confirm-password-registration" type="password">
+						<p id="paragraf-confirm-pass"></p>
+					</div>
+					<div>
+						<label id="change-left" for="email-registration">EMAIL</label>
+						<input  placeholder="EMAIL" id="email-registration" type="email">
+						<p id="paragraf-email"></p>
+					</div>
+					<div>
+						<button id="btn-registration">REGISTRATION</button>
+						<button id="back">BACK</button>
+					</div>
+				</form>
+			</div>
+			<div id="thirth-form">
+				<p id="label-paragraf">Get a new password</p>
+				<div id="form-email">
+					<form action="" method="POST">
+						<div id="email">
+							<label  for="form-emaill">EMAIL</label>
+							<input placeholder="EMAIL"  id="emaill" type="email">
+							<p id="paragraf-emails"></p>
+						</div>
+						<div>
+							<button id="btn-email">SEND AN EMAIL</button>
+							<button id="btn-back">BACK</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,202 @@
+body {
+  height: 100vh;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  background-image: url("../images/background2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
+
+#logo {
+  text-align: center !important; }
+  #logo img {
+    width: 20em;
+    height: 100%;
+    margin: 6em 0;
+    display: inline-block; }
+
+#form-login {
+  width: 200px;
+  height: 200px;
+  padding: 7px;
+  text-align: center;
+  margin: 5em auto;
+  margin-top: 1em; }
+  #form-login div {
+    text-align: center; }
+  #form-login label {
+    padding-top: 1em;
+    padding-top: 0;
+    color: #C6DAF0;
+    font-size: 11px; }
+  #form-login #anchor {
+    color: #C6DAF0;
+    font-size: 12px;
+    margin-top: 0.8em; }
+    #form-login #anchor #anchorOne {
+      text-decoration: none;
+      color: #C6DAF0;
+      float: left; }
+    #form-login #anchor #anchorTwo {
+      text-decoration: none;
+      color: #C6DAF0;
+      float: right; }
+  #form-login input {
+    background-color: #291810;
+    opacity: 0.4;
+    border: 1px solid white;
+    color: white;
+    width: 15em;
+    height: 1.5em;
+    margin-top: 0.3em; }
+  #form-login #paragraf-login, #form-login #par-login-pass {
+    font-size: 12px;
+    display: inline-block; }
+  #form-login #btn-login {
+    margin-top: 1em;
+    opacity: 0.4;
+    font-weight: 100;
+    border: 1px solid Transparent;
+    background: rgba(169, 169, 169, 0.07);
+    box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 8px 0px;
+    border-radius: 42px;
+    text-transform: uppercase;
+    font-size: 12px;
+    min-width: 120px;
+    width: 0%;
+    border-color: #7cc3d8;
+    color: #ffffff; }
+  #form-login #btn-login:hover {
+    background-color: #922417;
+    transform: scale(1.1, 1.1); }
+
+#form-registration {
+  width: 200px;
+  height: 200px;
+  padding: 7px;
+  margin: 5em auto;
+  margin-top: 1em; }
+  #form-registration div {
+    text-align: center; }
+  #form-registration label {
+    padding-top: 1em;
+    padding-top: 0;
+    color: #C6DAF0;
+    font-size: 11px; }
+  #form-registration input {
+    background-color: #291810;
+    opacity: 0.4;
+    border: 1px solid white;
+    color: white;
+    width: 15em;
+    height: 1.5em;
+    margin-top: 0.3em; }
+  #form-registration #paragraf-fname, #form-registration #paragraf-pass, #form-registration #paragraf-confirm-pass, #form-registration #paragraf-email {
+    font-size: 12px;
+    display: inline-block; }
+  #form-registration #btn-registration {
+    margin-top: 1em;
+    opacity: 0.4;
+    font-weight: 100;
+    border: 1px solid Transparent;
+    background: rgba(169, 169, 169, 0.07);
+    box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 8px 0px;
+    border-radius: 42px;
+    text-transform: uppercase;
+    font-size: 11px;
+    min-width: 95px;
+    width: 0%;
+    border-color: #7cc3d8;
+    color: #ffffff;
+    float: left; }
+  #form-registration #back {
+    margin-top: 1em;
+    opacity: 0.4;
+    font-weight: 100;
+    border: 1px solid Transparent;
+    background: rgba(169, 169, 169, 0.07);
+    box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 8px 0px;
+    border-radius: 42px;
+    text-transform: uppercase;
+    font-size: 11px;
+    min-width: 95px;
+    width: 0%;
+    border-color: #7cc3d8;
+    color: #ffffff;
+    float: right; }
+  #form-registration #btn-registration:hover {
+    background-color: #922417;
+    transform: scale(1.1, 1.1); }
+  #form-registration #back:hover {
+    background-color: #922417;
+    transform: scale(1.1, 1.1); }
+
+#label-paragraf {
+  color: #C6DAF0;
+  text-align: center; }
+
+#form-email {
+  width: 200px;
+  height: 200px;
+  padding: 7px;
+  text-align: center;
+  margin: 5em auto;
+  margin-top: 1em; }
+  #form-email div {
+    text-align: center; }
+  #form-email label {
+    padding-top: 1em;
+    padding-top: 0;
+    color: #C6DAF0;
+    font-size: 11px; }
+  #form-email input {
+    background-color: #291810;
+    opacity: 0.4;
+    border: 1px solid white;
+    color: white;
+    width: 15em;
+    height: 1.5em;
+    margin-top: 0.3em; }
+  #form-email #paragraf-emails {
+    font-size: 12px;
+    display: inline-block; }
+  #form-email #btn-email {
+    margin-top: 1em;
+    opacity: 0.4;
+    font-weight: 100;
+    border: 1px solid Transparent;
+    background: rgba(169, 169, 169, 0.07);
+    box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 8px 0px;
+    border-radius: 42px;
+    text-transform: uppercase;
+    font-size: 11px;
+    min-width: 95px;
+    width: 0%;
+    border-color: #7cc3d8;
+    color: #ffffff; }
+  #form-email #btn-back {
+    margin-top: 1em;
+    opacity: 0.4;
+    font-weight: 100;
+    border: 1px solid Transparent;
+    background: rgba(169, 169, 169, 0.07);
+    box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.3);
+    padding: 8px 0px;
+    border-radius: 42px;
+    text-transform: uppercase;
+    font-size: 11px;
+    min-width: 95px;
+    width: 0%;
+    border-color: #7cc3d8;
+    color: #ffffff; }
+  #form-email #btn-back:hover {
+    background-color: #922417;
+    transform: scale(1.1, 1.1); }
+  #form-email #btn-email:hover {
+    background-color: #922417;
+    transform: scale(1.1, 1.1); }
+
+/*# sourceMappingURL=login.css.map */
