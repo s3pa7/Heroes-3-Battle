@@ -22,3 +22,6 @@ Unit.prototype.draw = function (){
 	
 }
 
+Unit.prototype.fight = function (){
+	
+}

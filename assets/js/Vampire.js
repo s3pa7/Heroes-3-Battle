@@ -23,7 +23,18 @@ const VAMPIRE_WIDTH_FIGHT = 95;
 const VAMPIRE_HEIGHT_FIGHT = 111;
 const VAMPIRE_STEP_FIGHT = 90;
 
-function Vampire (ctx) {
+
+const VAMPIRE_SPRITE_X_BEATEN = 796;
+const VAMPIRE_SPRITE_Y_BEATEN = 793;
+const VAMPIRE_WIDTH_BEATEN = 90;
+const VAMPIRE_HEIGHT_BEATEN = 135;
+const VAMPIRE_STEP_BEATEN = 90;
+
+
+const VAMPIRE_DMG = 60;
+const VAMPIRE_HEATH = 100;
+
+function Vampire (ctx , count) {
 	Unit.call(this, ctx);
 	var _height = VAMPIRE_HEIGHT;
 	var _width = VAMPIRE_WIDTH;
@@ -32,7 +43,10 @@ function Vampire (ctx) {
 	var _sprite = SpriteLoader.onLoaded()[3];
 	var _step =  VAMPIRE_STEP;
 	var _speed = VAMPIRE_SPEED;
-
+	var _count = count;
+	var _damage = VAMPIRE_DMG;
+	var _health = VAMPIRE_HEATH;
+	
 	this.getPositionX = function() {	
 		return _positionX;
 	}
@@ -82,6 +96,21 @@ function Vampire (ctx) {
 	this.setSpeed = function(speed) {
 		_speed = speed;
 	}
+	this.getCount = function() {
+		return _count;
+	}
+	this.setCount = function(count) {
+		_count = count;
+	}
+	this.getDamage = function() {
+		return _damage;
+	}
+	this.getHealth = function() {
+		return _health;
+	}
+	this.setHealth = function(health) {
+		_health = health;
+	}
 
 	
 }
@@ -97,7 +126,7 @@ Vampire.prototype.draw = function (){
 
 }
 
-Vampire.prototype.move = function (toX, toY, ctx){
+Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var speed = this.getSpeed();
@@ -106,17 +135,22 @@ Vampire.prototype.move = function (toX, toY, ctx){
 	var step = this.getStep();
 	var height = this.getHeight();
 	var start = VAMPIRE_SPRITE_X;
+	var this1 = this;
 	if(toY < 100){
 		return;
 	}
 	var interval = window.setInterval(function() {
-			debugger;
+
 			ctx.clearRect(positionX, positionY, step, height);
 			if (positionX > toX - speed && positionX < toX + speed
 					&& positionY > toY - speed && positionY < toY + speed) {
-				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, step, height, positionX,
-						positionY, step, height);
+				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH, VAMPIRE_HEIGHT);
+				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, step, height, positionX,positionY, step, height);
 				 clearInterval(interval);
+				 if(atacking){
+						this1.fight(ctx);
+						atacking.takeDamage(ctx, this1.getCount() * this1.getDamage());
+					}
 				return;
 			}
 			debugger;
@@ -171,7 +205,7 @@ Vampire.prototype.fight = function (ctx){
 	var positionY = this.getPositionY();
 	var step = VAMPIRE_STEP_FIGHT;
 	var start = VAMPIRE_SPRITE_X_FIGHT;
-	
+	var this1 = this;
 		var myTimer = window.setInterval(function() {
 			
 			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_FIGHT, VAMPIRE_HEIGHT_FIGHT);
@@ -179,9 +213,49 @@ Vampire.prototype.fight = function (ctx){
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y_FIGHT, VAMPIRE_WIDTH_FIGHT, VAMPIRE_HEIGHT_FIGHT, positionX, positionY, VAMPIRE_WIDTH_FIGHT, VAMPIRE_HEIGHT_FIGHT);
 			if (start <= 430) {
 				start = VAMPIRE_SPRITE_X_FIGHT;
+				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_FIGHT, VAMPIRE_HEIGHT_FIGHT);
+				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
+				clearInterval(myTimer);
 			} else {
 				start -= step;
 			}
 		}, 500);
 		
+}
+Vampire.prototype.beaten = function (ctx){
+	var image = new Image();
+	image.src = this.getSprite().src;
+	var positionX = this.getPositionX();
+	var positionY = this.getPositionY();
+	var step = VAMPIRE_STEP_BEATEN;
+	var start = VAMPIRE_SPRITE_X_BEATEN;
+	var this1 = this;
+		var myTimer = window.setInterval(function() {
+			
+			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
+
+			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y_BEATEN, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN, positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
+			if (start <= 540) {
+				start = VAMPIRE_SPRITE_X_BEATEN;
+				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
+				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
+				
+				clearInterval(myTimer);
+			} else {
+				start -= step;
+			}
+		}, 500);
+}
+
+Vampire.prototype.takeDamage = function (ctx ,totalDmg){
+	var totalHealth = this.getHealth()  + VAMPIRE_HEATH * (this.getCount() -1);
+	totalHealth -= totalDmg;
+	if(totalHealth > 0 ){
+		this.setCount(parseInt(totalHealth / VAMPIRE_HEATH));
+		this.setHealth(parseInt(totalHealth % VAMPIRE_HEATH));
+		this.beaten(ctx);
+		console.log(totalHealth);
+	}else{
+		this.die(ctx);
+	}
 }
