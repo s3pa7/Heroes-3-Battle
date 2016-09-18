@@ -7,6 +7,8 @@ const DEATH_KNIGHT_SPRITE_Y = 190;
 const DEATH_KNIGHT_SPEED = 30;
 const DEATH_KNIGHT_STEP = 100;
 
+const DEATH_KNIGHT_MOVEMENT_SPEED = 400;
+
 const DEATH_KNIGHT_SPRITE_X_DIE = 391;
 const DEATH_KNIGHT_SPRITE_Y_DIE = 811;
 const DEATH_KNIGHT_WIDTH_DIE = 99;
@@ -40,6 +42,8 @@ function DeathKnight (ctx , count) {
 	var _count = count;
 	var _damage = DEATH_KNIGHT_DMG;
 	var _health = DEATH_KNIGHT_HEATH;
+	var _movementSpeed = DEATH_KNIGHT_MOVEMENT_SPEED;
+	var _taking_action = false;
 
 	this.getPositionX = function() {	
 		return _positionX;
@@ -105,16 +109,24 @@ function DeathKnight (ctx , count) {
 	this.setHealth = function(health) {
 		_health = health;
 	}
-	
+	this.getTakingAction = function() {
+		return _taking_action;
+	}
+	this.setTakingAction = function(takingAction) {
+		_taking_action = takingAction;
+	}
+	this.getMovementSpeed = function() {
+		return _movementSpeed;
+	}
 }
 DeathKnight.prototype = Object.create(Unit.prototype);
 DeathKnight.prototype.constructor = DeathKnight;
 	
 DeathKnight.prototype.draw = function (){
-	debugger;
+
 	var image = new Image();
 	image.src = this.getSprite().src;
-		debugger;
+
 		this.getCtx().drawImage(image, DEATH_KNIGHT_SPRITE_X, DEATH_KNIGHT_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
 		this.getCtx().fillText(this.getCount() ,20 ,50);
 }
@@ -129,7 +141,8 @@ DeathKnight.prototype.move = function (toX, toY, ctx , atacking){
 	var height = this.getHeight();
 	var start = DEATH_KNIGHT_SPRITE_X;
 	var this1 = this;
-	if(toY < 100){
+	this.setTakingAction(true);
+	if(toY < 100 || Math.abs(positionX  - toX) + Math.abs(positionY  - toY) > this.getMovementSpeed()){
 		return;
 	}	
 		var myTimer = window.setInterval(function() {
@@ -137,8 +150,14 @@ DeathKnight.prototype.move = function (toX, toY, ctx , atacking){
 			ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH, DEATH_KNIGHT_HEIGHT);
 			if (positionX > toX - step && positionX < toX + step
 					&& positionY > toY - step && positionY < toY + step) {
+				this1.setTakingAction(false);
+				var afterTimer = window.setInterval(function(){
 				ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH, DEATH_KNIGHT_HEIGHT);
 				ctx.drawImage(image, DEATH_KNIGHT_SPRITE_X, DEATH_KNIGHT_SPRITE_Y, DEATH_KNIGHT_WIDTH, DEATH_KNIGHT_HEIGHT, toX, toY, DEATH_KNIGHT_WIDTH, DEATH_KNIGHT_HEIGHT);
+				if(this1.getTakingAction()){
+					clearInterval(afterTimer);
+				}
+				},  100);
 				clearInterval(myTimer);
 				if(atacking){
 					this1.fight(ctx);
@@ -172,14 +191,15 @@ DeathKnight.prototype.move = function (toX, toY, ctx , atacking){
 		this.setPositionX(toX);
 		this.setPositionY(toY);
 }
-DeathKnight.prototype.die = function (ctx){
+DeathKnight.prototype.die = function (ctx,totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = DEATH_KNIGHT_STEP_DIE;
 	var start = DEATH_KNIGHT_SPRITE_X_DIE;
-	
+	this.setTakingAction(true);
+	alert(" Dark Champion took " +  totalDmg + " All champions we now die \n Say goodbye");
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH_DIE, DEATH_KNIGHT_HEIGHT_DIE);
 			ctx.drawImage(image, start, DEATH_KNIGHT_SPRITE_Y_DIE, DEATH_KNIGHT_WIDTH_DIE, DEATH_KNIGHT_HEIGHT_DIE, positionX, positionY, DEATH_KNIGHT_WIDTH_DIE, DEATH_KNIGHT_HEIGHT_DIE);
@@ -215,7 +235,7 @@ DeathKnight.prototype.fight = function (ctx){
 		},  5000/50);
 }
 
-DeathKnight.prototype.beaten = function (ctx){
+DeathKnight.prototype.beaten = function (ctx,totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
@@ -231,10 +251,9 @@ DeathKnight.prototype.beaten = function (ctx){
 			ctx.drawImage(image, start, DEATH_KNIGHT_SPRITE_Y_BEATEN, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN, positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
 			if (start <= 350) {
 				start = DEATH_KNIGHT_SPRITE_X_BEATEN;
-				debugger;
 				ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
 				ctx.drawImage(image, DEATH_KNIGHT_SPRITE_X, DEATH_KNIGHT_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				
+				alert("Dark Champion took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + "  dark champions died");
 				clearInterval(myTimer);
 			} else {
 				start -= step;
@@ -249,9 +268,10 @@ DeathKnight.prototype.takeDamage = function (ctx ,totalDmg){
 	if(totalHealth > 0 ){
 		this.setCount(parseInt(totalHealth / DEATH_KNIGHT_HEATH));
 		this.setHealth(parseInt(totalHealth % DEATH_KNIGHT_HEATH));
-		this.beaten(ctx);
+		this.beaten(ctx, totalDmg);
 		console.log(totalHealth);
 	}else{
-		this.die(ctx);
+		this.die(ctx , totalDmg);
 	}
+	
 }

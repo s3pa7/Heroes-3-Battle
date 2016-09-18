@@ -17,6 +17,25 @@ $(function(){
 	heroesLeft.unit2.draw();
 	heroesRight.unit3.draw();
 	heroesRight.unit4.draw();
+	$("canvas").on("mousemove" , function(e){
+		if(inControllLeft || inControllRight){
+			var inControll = inControllRight ? inControllRight : inControllLeft;
+			if(Math.abs(inControll.getPositionX()  -  e.offsetX) + Math.abs(inControll.getPositionY()  - e.offsetY) < inControll.getMovementSpeed()){
+				$("canvas").css({
+				 "cursor": "pointer",	
+				})
+			}else{
+				$("canvas").css({
+					 "cursor": "not-allowed",
+				})
+			}
+		}else {
+			$("canvas").css({
+				 "cursor": "default",
+			})
+		}
+	});
+	
 	$("canvas").on("click", function(e){
 		var offsetX = e.offsetX;
 		var offsetY = e.offsetY;
@@ -56,7 +75,6 @@ $(function(){
 			var unit1 = inControllRight;
 			var offsetX2 = offsetX - unit1.getWidth() / 2;
 			var offsetY2 = offsetY - unit1.getHeight() / 2;
-			debugger;
 			var checkFunc = checkPlaceTaken(offsetX , offsetY ,heroesLeft , heroesRight);
 			console.log(checkFunc);
 			if( checkFunc == false){
@@ -98,7 +116,7 @@ function whichHero (x,y,heroesLeft){
 	}
 }
 function whichHeroRight (x,y,heroesRight){
-	debugger;
+
 	for (var i in heroesRight){
 		console.log(y , heroesRight[i].getPositionX())
 		if(x > heroesRight[i].getPositionX() && x < heroesRight[i].getPositionRight() &&

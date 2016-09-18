@@ -7,6 +7,8 @@ const CHAMPION1_SPRITE_Y = 1260;
 const CHAMPION1_SPEED = 30;
 const CHAMPION1_STEP = 165;
 
+const CHAMPION1_MOVEMENT_SPEED = 400;
+
 const CHAMPION1_SPRITE_X_DIE = 150;
 const CHAMPION1_SPRITE_Y_DIE = 628;
 const CHAMPION1_WIDTH_DIE = 150;
@@ -28,6 +30,7 @@ const CHAMPION1_STEP_BEATEN = 150;
 const CHAMPION1_DMG = 60;
 const CHAMPION1_HEATH = 100;
 
+
 function Champion1 (ctx , count) {
 	Unit.call(this, ctx);
 	var _height = CHAMPION1_HEIGHT;
@@ -40,7 +43,9 @@ function Champion1 (ctx , count) {
 	var _count = count;
 	var _damage = CHAMPION1_DMG;
 	var _health = CHAMPION1_HEATH;
-
+	var _movementSpeed = CHAMPION1_MOVEMENT_SPEED;
+	var _taking_action = false;
+	
 	this.getPositionX = function() {
 		return _positionX;
 	}
@@ -105,6 +110,15 @@ function Champion1 (ctx , count) {
 	this.setHealth = function(health) {
 		_health = health;
 	}
+	this.getTakingAction = function() {
+		return _taking_action;
+	}
+	this.setTakingAction = function(takingAction) {
+		_taking_action = takingAction;
+	}
+	this.getMovementSpeed = function() {
+		return _movementSpeed;
+	}
 	
 }
 Champion1.prototype = Object.create(Unit.prototype);
@@ -113,7 +127,6 @@ Champion1.prototype.constructor = Champion1;
 Champion1.prototype.draw = function (){
 	var image = new Image();
 	image.src = this.getSprite().src;
-		debugger;
 		this.getCtx().drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
 
 }
@@ -128,7 +141,8 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 	var height = this.getHeight();
 	var start = CHAMPION1_SPRITE_X;
 	var this1 = this;
-	if(toY < 100){
+	this.setTakingAction(true);
+	if(toY < 100 || Math.abs(positionX  - toX) + Math.abs(positionY  - toY) > this.getMovementSpeed()){
 		return;
 	}	
 		var myTimer = window.setInterval(function() {
@@ -136,8 +150,14 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
 			if (positionX < toX + speed && positionX > toX - speed
 					&& positionY < toY + speed && positionY > toY - speed) {
-				ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
-				ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, CHAMPION1_WIDTH, CHAMPION1_HEIGHT, toX, toY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
+				this1.setTakingAction(false);
+				var afterTimer = window.setInterval(function(){
+					ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
+					ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, CHAMPION1_WIDTH, CHAMPION1_HEIGHT, toX, toY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
+					if(this1.getTakingAction()){
+						clearInterval(afterTimer);
+					}
+				},  100);
 				clearInterval(myTimer);
 				if(atacking){
 					this1.fight(ctx);
@@ -172,19 +192,19 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 		this.setPositionY(toY);
 }
 
-Champion1.prototype.die = function (ctx){
+Champion1.prototype.die = function (ctx ,totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = CHAMPION1_STEP_DIE;
 	var start = CHAMPION1_SPRITE_X_DIE;
-	
+	this.setTakingAction(true);
+	alert("Champion took " +  totalDmg + " All champions wi now die \n Say goodbye");
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE);
 			ctx.drawImage(image, start, CHAMPION1_SPRITE_Y_DIE, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE, positionX, positionY, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE);
 			if (start >= 750) {
-				
 				return;
 		} else {
 				start += step;
@@ -216,7 +236,7 @@ Champion1.prototype.fight = function (ctx){
 		}, 500);
 }
 
-Champion1.prototype.beaten = function (ctx){
+Champion1.prototype.beaten = function (ctx, totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
@@ -234,23 +254,22 @@ Champion1.prototype.beaten = function (ctx){
 				start = CHAMPION1_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_BEATEN, CHAMPION1_HEIGHT_BEATEN);
 				ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				
+				alert("Champion took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + " champions died");
 				clearInterval(myTimer);
 			} else {
 				start += step;
 			}
 		}, 500);
 }
-
 Champion1.prototype.takeDamage = function (ctx ,totalDmg){
 	var totalHealth = this.getHealth()  + CHAMPION1_HEATH * (this.getCount() -1);
 	totalHealth -= totalDmg;
 	if(totalHealth > 0 ){
 		this.setCount(parseInt(totalHealth / CHAMPION1_HEATH));
 		this.setHealth(parseInt(totalHealth % CHAMPION1_HEATH));
-		this.beaten(ctx);
+		this.beaten(ctx, totalDmg);
 		console.log(totalHealth);
 	}else{
-		this.die(ctx);
+		this.die(ctx ,totalDmg);
 	}
 }

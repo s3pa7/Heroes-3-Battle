@@ -17,6 +17,8 @@ const VAMPIRE_WIDTH_DIE = 90;
 const VAMPIRE_HEIGHT_DIE = 120;
 const VAMPIRE_STEP_DIE = 95;
 
+const VAMPIRE_MOVEMENT_SPEED = 200;
+
 const VAMPIRE_SPRITE_X_FIGHT = 605;
 const VAMPIRE_SPRITE_Y_FIGHT = 400;
 const VAMPIRE_WIDTH_FIGHT = 95;
@@ -46,6 +48,8 @@ function Vampire (ctx , count) {
 	var _count = count;
 	var _damage = VAMPIRE_DMG;
 	var _health = VAMPIRE_HEATH;
+	var _movementSpeed = VAMPIRE_MOVEMENT_SPEED;
+	var _taking_action = false;
 	
 	this.getPositionX = function() {	
 		return _positionX;
@@ -111,6 +115,15 @@ function Vampire (ctx , count) {
 	this.setHealth = function(health) {
 		_health = health;
 	}
+	this.getTakingAction = function() {
+		return _taking_action;
+	}
+	this.setTakingAction = function(takingAction) {
+		_taking_action = takingAction;
+	}
+	this.getMovementSpeed = function() {
+		return _movementSpeed;
+	}
 
 	
 }
@@ -118,10 +131,8 @@ Vampire.prototype = Object.create(Unit.prototype);
 Vampire.prototype.constructor = Vampire;
 	
 Vampire.prototype.draw = function (){
-	debugger;
 	var image = new Image();
 	image.src = this.getSprite().src;
-		debugger;
 		this.getCtx().drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
 
 }
@@ -136,7 +147,8 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 	var height = this.getHeight();
 	var start = VAMPIRE_SPRITE_X;
 	var this1 = this;
-	if(toY < 100){
+	this.setTakingAction(true);
+	if(toY < 100 || Math.abs(positionX  - toX) + Math.abs(positionY  - toY) > this.getMovementSpeed()){
 		return;
 	}
 	var interval = window.setInterval(function() {
@@ -144,8 +156,14 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 			ctx.clearRect(positionX, positionY, step, height);
 			if (positionX > toX - speed && positionX < toX + speed
 					&& positionY > toY - speed && positionY < toY + speed) {
+				this1.setTakingAction(false);
+				var afterTimer = window.setInterval(function(){
 				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH, VAMPIRE_HEIGHT);
 				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, step, height, positionX,positionY, step, height);
+				 if(this1.getTakingAction()){
+						clearInterval(afterTimer);
+					}
+				},  100);
 				 clearInterval(interval);
 				 if(atacking){
 						this1.fight(ctx);
@@ -153,8 +171,6 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 					}
 				return;
 			}
-			debugger;
-			//ctx.clearRect(positionX, positionY, step, height);
 
 			if (positionX > toX) {
 				positionX -= speed;
@@ -171,7 +187,6 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y, step, height, positionX,
 					positionY, step, height);
 			start -= step;
-			debugger;
 			if (start < toX - step) {
 				start = VAMPIRE_SPRITE_X;
 			}
@@ -179,14 +194,15 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 		this.setPositionX(toX);
 		this.setPositionY(toY);
 }
-Vampire.prototype.die = function (ctx){
+Vampire.prototype.die = function (ctx ,totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = VAMPIRE_STEP_DIE;
 	var start = VAMPIRE_SPRITE_X_DIE;
-	
+	this.setTakingAction(true);
+	alert(" Vampire took " +  totalDmg + " All vampire we now die \n Say goodbye");
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE);
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y_DIE, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE, positionX, positionY, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE);
@@ -222,7 +238,7 @@ Vampire.prototype.fight = function (ctx){
 		}, 500);
 		
 }
-Vampire.prototype.beaten = function (ctx){
+Vampire.prototype.beaten = function (ctx,totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
@@ -239,7 +255,7 @@ Vampire.prototype.beaten = function (ctx){
 				start = VAMPIRE_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
 				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				
+				alert("Vampire took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + "  vampire died");
 				clearInterval(myTimer);
 			} else {
 				start -= step;
@@ -253,9 +269,9 @@ Vampire.prototype.takeDamage = function (ctx ,totalDmg){
 	if(totalHealth > 0 ){
 		this.setCount(parseInt(totalHealth / VAMPIRE_HEATH));
 		this.setHealth(parseInt(totalHealth % VAMPIRE_HEATH));
-		this.beaten(ctx);
+		this.beaten(ctx, totalDmg);
 		console.log(totalHealth);
 	}else{
-		this.die(ctx);
+		this.die(ctx, totalDmg);
 	}
 }
