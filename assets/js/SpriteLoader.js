@@ -30,13 +30,17 @@ var SpriteLoader = {
 }
 
 SpriteLoader.addSprite('champion', 'assets/images/champion.png');
-//SpriteLoader.addSprite('deathknight', 'assets/images/death_knight.png');
+SpriteLoader.addSprite('archangel', 'assets/images/Archangel.png');
+SpriteLoader.addSprite('deathknight', 'assets/images/death_knight.png');
+SpriteLoader.addSprite('vampire', 'assets/images/vampirec.png');
 
-SpriteLoader.onLoaded(function() {
+SpriteLoader.onLoaded = function() {
 	console.log('Al images loaded');
 	var champion = SpriteLoader.getSprite('champion');
 	var deathknight = SpriteLoader.getSprite('deathknight');
-	
-	console.log(champion);
-})
+	var archangel = SpriteLoader.getSprite('archangel');
+	var vampire = SpriteLoader.getSprite('vampire');
+	var array = [champion, archangel, deathknight , vampire];
+	return array;
+}
 

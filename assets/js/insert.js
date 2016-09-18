@@ -3,16 +3,23 @@
  */
 
 $(function (){ 
+	validateUsername();
+	validatePaswordd();
+	validateComfirmPassword();
+	validateEmail();
 	$("form").on("click", function(e){
 		e.preventDefault();
 	});
 	
 	$("#btn-registration").on("click", function(){
-		debugger;
 		var login = $("#login-registration").val();
 		var password = $("#password-registration").val();
 		var email = $("#email-registration").val();
-		
+		debugger;
+		if(validateUsername() == false || validatePaswordd() == false 
+				|| validateComfirmPassword() == false ||  validateEmail() == false){
+			return;
+		}else {
 		$.ajax({
 			  method:"POST",
 			  url: "assets/php/insert.php",
@@ -24,9 +31,8 @@ $(function (){
 			  console.log(response);
 			  $('#form-registration').hide();
 			  alert(response);
-			  debugger;
-			
-			
+
 			})
+		}
 	})
 });

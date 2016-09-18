@@ -1,9 +1,8 @@
 /**
  * 
  */
+// Validation for login-userName;
 function validateUserName (){
-	
-	$('#login').on('blur',function (){
 		$('#paragraf-login').show();
 		var name = $('#login').val();
 		var nameRegex = /^[a-zA-Z ]{3,30}$/;
@@ -22,12 +21,11 @@ function validateUserName (){
 			return false;
 		}
 
-	})
+	
 	
 }
-
+// Validation for login-pass;
 function validatePasword (){
-	$('#password').on('blur',function (){
 		$('#par-login-pass').show();
 		var pass = $('#password').val();
 
@@ -47,6 +45,5 @@ function validatePasword (){
 			$('#par-login-pass').html('Please Enter a valid password');
 			return false;
 		}
-	})
 }
 

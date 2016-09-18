@@ -1,13 +1,7 @@
 /**
  * 
  */
-
-$(function(){
-	validateEmailThirtForm();
-})
-
 function validateEmailThirtForm() {
-	$('#emaill').on('blur',function (){
 		$('#paragraf-emails').show();
 		var email = $('#emaill').val();
 
@@ -18,13 +12,13 @@ function validateEmailThirtForm() {
 			$('#paragraf-emails').css({
 				color: "white"
 			})
-			$('#paragraf-emails').html('Valid');
+			$('#paragraf-emails').html('Valid')
+			return true;
 		}else {
 			$('#paragraf-emails').css({
 				color: "red"
 			})
 			$('#paragraf-emails').html('Please Enter a valid email');
-			return;
+			return false;
 		}
-	})
 }

@@ -14,12 +14,10 @@ $(function (){
 	$('#thirth-form').hide();
 	$("#btn-login").on("click", function(){
 		debugger;
-		var a = validateUserName();
-		validatePasword();
 		var login = $("#login").val();
 		var password = $("#password").val();
 		debugger;
-		if(validateUserName() == false){
+		if(validateUserName() == false || validatePasword() == false){
 			return;
 		}else {
 		$.ajax({
