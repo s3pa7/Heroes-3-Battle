@@ -48,7 +48,6 @@ function validateComfirmPassword (){
 		$('#paragraf-confirm-pass').show();
 		var pass = $('#password-registration').val();
 		var confirmPass = $('#confirm-password-registration').val();
-
 		if(pass == confirmPass){
 			$('#paragraf-confirm-pass').css({
 				color: "white"

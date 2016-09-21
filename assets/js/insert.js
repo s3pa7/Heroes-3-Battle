@@ -15,9 +15,9 @@ $(function (){
 		var login = $("#login-registration").val();
 		var password = $("#password-registration").val();
 		var email = $("#email-registration").val();
-		debugger;
-		if(validateUsername() == false || validatePaswordd() == false 
-				|| validateComfirmPassword() == false ||  validateEmail() == false){
+
+		if(validateUsername() == false && validatePaswordd() == false 
+				&& validateComfirmPassword() == false &&  validateEmail() == false){
 			return;
 		}else {
 		$.ajax({
@@ -27,10 +27,9 @@ $(function (){
 			  data: {login :login , pass : password, email : email},
 			})
 			.done(function(response) {
-				debugger;
 			  console.log(response);
 			  $('#form-registration').hide();
-			  alert(response);
+			  $('#form-login').show();
 
 			})
 		}

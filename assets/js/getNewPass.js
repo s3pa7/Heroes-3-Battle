@@ -8,7 +8,6 @@ $(function (){
 		e.preventDefault();
 	});
 	$("#btn-email").on("click", function(){
-		debugger;
 		var email = $("#emaill").val();
 		if( validateEmailThirtForm () == false){
 			return;
@@ -20,7 +19,6 @@ $(function (){
 			  data: {email : email},
 			})
 			.done(function(response) {
-			  debugger;
 			  console.log(response);
 			  $('#thirth-form').hide();
 			  alert("Success");

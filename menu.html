@@ -16,10 +16,16 @@
 	<script type="text/javascript" src="assets/js/Champion.js"></script>
 	<script type="text/javascript" src="assets/js/Champion1.js"></script>
 	<script type="text/javascript" src="assets/js/Units.js"></script>
+	<script type="text/javascript" src="assets/js/Grid.js"></script>
 	</head>
 	<body>
+		<div id="left-grid" style="z-index: 3;top:200px; left:160px; position:absolute;"></div>
+		<div id="right-grid" style="z-index: 3;top:200px; left:576px; position:absolute;"></div>
 		<div id="pics">
-			<canvas width="1120" height="600"></canvas>
+			<canvas  id="1" style="z-index: 4; position:absolute; top:50px; left:100px;" width="1000" height="550"></canvas>
+			<canvas  id="2" style="z-index: 4; position:absolute; top:50px; left:100px;" width="1000" height="550"></canvas>
+			<canvas  id="3" style="z-index: 4; position:absolute; top:50px; left:100px;" width="1000" height="550"></canvas>
+			<canvas  id="4" style="z-index: 4; position:absolute; top:50px; left:100px;" width="1000" height="550"></canvas>
 		</div>
 	</body>
 </html>

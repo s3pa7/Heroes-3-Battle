@@ -1,6 +1,6 @@
 const CHAMPION1_HEIGHT = 110;
 const CHAMPION1_WIDTH = 110;
-const POSITION_CHAMPION1_X = 90;
+const POSITION_CHAMPION1_X = 30;
 const POSITION_CHAMPION1_Y = 200;
 const CHAMPION1_SPRITE_X = 169;
 const CHAMPION1_SPRITE_Y = 1260;
@@ -27,7 +27,7 @@ const CHAMPION1_WIDTH_BEATEN = 150;
 const CHAMPION1_HEIGHT_BEATEN = 144;
 const CHAMPION1_STEP_BEATEN = 150;
 
-const CHAMPION1_DMG = 60;
+const CHAMPION1_DMG = 35;
 const CHAMPION1_HEATH = 100;
 
 
@@ -45,6 +45,7 @@ function Champion1 (ctx , count) {
 	var _health = CHAMPION1_HEATH;
 	var _movementSpeed = CHAMPION1_MOVEMENT_SPEED;
 	var _taking_action = false;
+	var _isDead = false
 	
 	this.getPositionX = function() {
 		return _positionX;
@@ -119,6 +120,12 @@ function Champion1 (ctx , count) {
 	this.getMovementSpeed = function() {
 		return _movementSpeed;
 	}
+	this.setIsDead = function(isDead) {
+		_isDead = isDead;
+	}
+	this.getIsDead = function() {
+		return _isDead;
+	}
 	
 }
 Champion1.prototype = Object.create(Unit.prototype);
@@ -127,14 +134,15 @@ Champion1.prototype.constructor = Champion1;
 Champion1.prototype.draw = function (){
 	var image = new Image();
 	image.src = this.getSprite().src;
-		this.getCtx().drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
-
+	this.getCtx().drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
+	this.drawCount();
 }
-Champion1.prototype.move = function (toX, toY, ctx , atacking){
+Champion1.prototype.move = function (toX, toY, atacking){
 	var image =  this.getSprite();
 	image.src = this.getSprite().src;
 	var count = 0;
 	var speed = this.getSpeed();
+	var ctx = this.getCtx();
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = this.getStep();
@@ -145,27 +153,23 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 	if(toY < 100 || Math.abs(positionX  - toX) + Math.abs(positionY  - toY) > this.getMovementSpeed()){
 		return;
 	}	
-		var myTimer = window.setInterval(function() {
+		var moveTimer = window.setInterval(function() {
 			
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
 			if (positionX < toX + speed && positionX > toX - speed
 					&& positionY < toY + speed && positionY > toY - speed) {
-				this1.setTakingAction(false);
-				var afterTimer = window.setInterval(function(){
+					this1.setTakingAction(false);
 					ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
 					ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, CHAMPION1_WIDTH, CHAMPION1_HEIGHT, toX, toY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
-					if(this1.getTakingAction()){
-						clearInterval(afterTimer);
-					}
-				},  100);
-				clearInterval(myTimer);
+					this1.drawCount();
+					clearInterval(moveTimer);
 				if(atacking){
-					this1.fight(ctx);
-					atacking.takeDamage(ctx, this1.getCount() * this1.getDamage());
+					this1.fight();
+					atacking.takeDamage(this1.getCount() * this1.getDamage());
 				}
 			return;
 			}
-			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
+			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH + 20, CHAMPION1_HEIGHT);
 
 			if (positionX > toX) {
 				positionX -= speed;
@@ -180,7 +184,7 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 				positionY += speed;
 			}
 			
-			
+			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
 			ctx.drawImage(image, start, CHAMPION1_SPRITE_Y, CHAMPION1_WIDTH, CHAMPION1_HEIGHT, positionX, positionY, CHAMPION1_WIDTH, CHAMPION1_HEIGHT);
 			if (start >= 900) {
 				start = CHAMPION1_SPRITE_X;
@@ -192,29 +196,32 @@ Champion1.prototype.move = function (toX, toY, ctx , atacking){
 		this.setPositionY(toY);
 }
 
-Champion1.prototype.die = function (ctx ,totalDmg){
+Champion1.prototype.die = function (totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
+	var ctx = this.getCtx();
 	var positionY = this.getPositionY();
 	var step = CHAMPION1_STEP_DIE;
 	var start = CHAMPION1_SPRITE_X_DIE;
 	this.setTakingAction(true);
-	alert("Champion took " +  totalDmg + " All champions wi now die \n Say goodbye");
+	//alert("Champion took " +  totalDmg + " All champions wi now die \n Say goodbye");
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE);
 			ctx.drawImage(image, start, CHAMPION1_SPRITE_Y_DIE, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE, positionX, positionY, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE);
 			if (start >= 750) {
+				ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_DIE, CHAMPION1_HEIGHT_DIE);
 				return;
 		} else {
 				start += step;
 			}
-		},  500);
+		},  200);
 }
 
-Champion1.prototype.fight = function (ctx){
+Champion1.prototype.fight = function (){
 	var image = new Image();
 	image.src = this.getSprite().src;
+	var ctx = this.getCtx();
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = CHAMPION1_STEP_FIGHT;
@@ -223,53 +230,66 @@ Champion1.prototype.fight = function (ctx){
 		var myTimer = window.setInterval(function() {
 			
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_FIGHT, CHAMPION1_HEIGHT_FIGHT);
-		
 			ctx.drawImage(image, start, CHAMPION1_SPRITE_Y_FIGHT, CHAMPION1_WIDTH_FIGHT, CHAMPION1_HEIGHT_FIGHT, positionX, positionY, CHAMPION1_WIDTH_FIGHT, CHAMPION1_HEIGHT_FIGHT);
+			this1.drawCount();
+
 			if (start >= 1370) {
 				start = CHAMPION1_SPRITE_X_FIGHT;
 				ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_FIGHT, CHAMPION1_HEIGHT_FIGHT);
 				ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
+				this1.drawCount();
 				clearInterval(myTimer);
 			} else {
 				start += step;
 			}
-		}, 500);
+		}, 200);
 }
 
-Champion1.prototype.beaten = function (ctx, totalDmg){
+Champion1.prototype.beaten = function (totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
+	var ctx = this.getCtx();
 	var step = CHAMPION1_STEP_BEATEN;
 	var start = CHAMPION1_SPRITE_X_BEATEN;
 	var this1 = this;
 		var myTimer = window.setInterval(function() {
-			
 			ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_BEATEN, CHAMPION1_HEIGHT_BEATEN);
-
-		
 			ctx.drawImage(image, start, CHAMPION1_SPRITE_Y_BEATEN, CHAMPION1_WIDTH_BEATEN, CHAMPION1_HEIGHT_BEATEN, positionX, positionY, CHAMPION1_WIDTH_BEATEN, CHAMPION1_HEIGHT_BEATEN);
+			this1.drawCount();
 			if (start >= 445) {
 				start = CHAMPION1_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, CHAMPION1_WIDTH_BEATEN, CHAMPION1_HEIGHT_BEATEN);
 				ctx.drawImage(image, CHAMPION1_SPRITE_X, CHAMPION1_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				alert("Champion took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + " champions died");
+				this1.drawCount();
+				//alert("Champion took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + " champions died");
 				clearInterval(myTimer);
 			} else {
 				start += step;
 			}
-		}, 500);
+		}, 200);
 }
-Champion1.prototype.takeDamage = function (ctx ,totalDmg){
+Champion1.prototype.takeDamage = function (totalDmg){
 	var totalHealth = this.getHealth()  + CHAMPION1_HEATH * (this.getCount() -1);
 	totalHealth -= totalDmg;
+	var ctx = this.getCtx();
+	this.drawCount();
 	if(totalHealth > 0 ){
+		this.getCtx().clearRect(this.getPositionX, this.getPositionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
 		this.setCount(parseInt(totalHealth / CHAMPION1_HEATH));
 		this.setHealth(parseInt(totalHealth % CHAMPION1_HEATH));
-		this.beaten(ctx, totalDmg);
+		this.beaten(totalDmg);
 		console.log(totalHealth);
 	}else{
-		this.die(ctx ,totalDmg);
+		this.getCtx().clearRect(this.getPositionX, this.getPositionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
+		this.die(totalDmg);
+		this.setIsDead(true);
 	}
+}
+Champion1.prototype.drawCount = function (){
+	this.getCtx().font="20px Georgia";
+	this.getCtx().fillStyle="#ccc";
+	this.getCtx().fillText(this.getCount() ,this.getPositionRight() ,this.getPositionY() + this.getHeight());
+
 }

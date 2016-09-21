@@ -13,11 +13,10 @@ $(function (){
 	$('#form-registration').hide();
 	$('#thirth-form').hide();
 	$("#btn-login").on("click", function(){
-		debugger;
+
 		var login = $("#login").val();
 		var password = $("#password").val();
-		debugger;
-		if(validateUserName() == false || validatePasword() == false){
+		if(validateUserName() == false && validatePasword() == false){
 			return;
 		}else {
 		$.ajax({
@@ -27,9 +26,8 @@ $(function (){
 			  data: {login :login , pass : password},
 			})
 			.done(function(response) {
-				debugger;
+
 			  console.log(response);
-			  debugger;
 			  window.location.replace("http://localhost/Heroes-3/menu.html");
 			})
 		}

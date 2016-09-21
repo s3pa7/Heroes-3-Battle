@@ -4,7 +4,7 @@
 
 const VAMPIRE_HEIGHT = 130;
 const VAMPIRE_WIDTH = 100;	
-const POSITION_VAMPIRE_X = 1000;
+const POSITION_VAMPIRE_X = 850;
 const POSITION_VAMPIRE_Y = 200;
 const VAMPIRE_SPRITE_X = 800;
 const VAMPIRE_SPRITE_Y = 130;
@@ -33,8 +33,8 @@ const VAMPIRE_HEIGHT_BEATEN = 135;
 const VAMPIRE_STEP_BEATEN = 90;
 
 
-const VAMPIRE_DMG = 60;
-const VAMPIRE_HEATH = 100;
+const VAMPIRE_DMG = 20;
+const VAMPIRE_HEATH = 200;
 
 function Vampire (ctx , count) {
 	Unit.call(this, ctx);
@@ -50,6 +50,7 @@ function Vampire (ctx , count) {
 	var _health = VAMPIRE_HEATH;
 	var _movementSpeed = VAMPIRE_MOVEMENT_SPEED;
 	var _taking_action = false;
+	var _isDead = false
 	
 	this.getPositionX = function() {	
 		return _positionX;
@@ -124,6 +125,12 @@ function Vampire (ctx , count) {
 	this.getMovementSpeed = function() {
 		return _movementSpeed;
 	}
+	this.setIsDead = function(isDead) {
+		_isDead = isDead;
+	}
+	this.getIsDead = function() {
+		return _isDead;
+	}
 
 	
 }
@@ -133,13 +140,15 @@ Vampire.prototype.constructor = Vampire;
 Vampire.prototype.draw = function (){
 	var image = new Image();
 	image.src = this.getSprite().src;
-		this.getCtx().drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
+	this.getCtx().drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this.getWidth() ,this.getHeight(), this.getPositionX(), this.getPositionY(),this.getWidth(),this.getHeight());
+	this.drawCount();
 
 }
 
-Vampire.prototype.move = function (toX, toY, ctx ,atacking){
+Vampire.prototype.move = function (toX, toY, atacking){
 	var image = new Image();
 	image.src = this.getSprite().src;
+	var ctx = this.getCtx();
 	var speed = this.getSpeed();
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
@@ -147,30 +156,25 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 	var height = this.getHeight();
 	var start = VAMPIRE_SPRITE_X;
 	var this1 = this;
-	this.setTakingAction(true);
 	if(toY < 100 || Math.abs(positionX  - toX) + Math.abs(positionY  - toY) > this.getMovementSpeed()){
 		return;
 	}
-	var interval = window.setInterval(function() {
+	var moveTimer = window.setInterval(function() {
 
 			ctx.clearRect(positionX, positionY, step, height);
 			if (positionX > toX - speed && positionX < toX + speed
 					&& positionY > toY - speed && positionY < toY + speed) {
-				this1.setTakingAction(false);
-				var afterTimer = window.setInterval(function(){
 				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH, VAMPIRE_HEIGHT);
 				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, step, height, positionX,positionY, step, height);
-				 if(this1.getTakingAction()){
-						clearInterval(afterTimer);
-					}
-				},  100);
-				 clearInterval(interval);
-				 if(atacking){
-						this1.fight(ctx);
-						atacking.takeDamage(ctx, this1.getCount() * this1.getDamage());
-					}
+				this1.drawCount();
+				clearInterval(moveTimer);
+				if(atacking){
+					this1.fight();
+					atacking.takeDamage(this1.getCount() * this1.getDamage());
+				}
 				return;
 			}
+			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH, VAMPIRE_HEIGHT);
 
 			if (positionX > toX) {
 				positionX -= speed;
@@ -182,8 +186,7 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 			} else if (positionY < toY) {
 				positionY += speed;
 			}
-			//this.getCtx().drawImage(image, start, VAMPIRE_SPRITE_Y, this.getStep() ,this.getHeight(), positionX, positionY,this.getWidth(),this.getHeight());
-
+			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH, VAMPIRE_HEIGHT);
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y, step, height, positionX,
 					positionY, step, height);
 			start -= step;
@@ -191,34 +194,36 @@ Vampire.prototype.move = function (toX, toY, ctx ,atacking){
 				start = VAMPIRE_SPRITE_X;
 			}
 		}, 500 / 20);
-		this.setPositionX(toX);
-		this.setPositionY(toY);
+		this1.setPositionX(toX);
+		this1.setPositionY(toY);
 }
-Vampire.prototype.die = function (ctx ,totalDmg){
+Vampire.prototype.die = function (totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
+	var ctx = this.getCtx();
 	var step = VAMPIRE_STEP_DIE;
 	var start = VAMPIRE_SPRITE_X_DIE;
 	this.setTakingAction(true);
-	alert(" Vampire took " +  totalDmg + " All vampire we now die \n Say goodbye");
+	//alert(" Vampire took " +  totalDmg + " All vampire we now die \n Say goodbye");
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE);
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y_DIE, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE, positionX, positionY, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE);
 			if (start <= 450) {
-				
+				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_DIE, VAMPIRE_HEIGHT_DIE);
 				return;
 		} else {
 				start -= step;
 			}
-		},  500);
+		},  200);
 }
-Vampire.prototype.fight = function (ctx){
+Vampire.prototype.fight = function (){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
+	var ctx = this.getCtx();
 	var step = VAMPIRE_STEP_FIGHT;
 	var start = VAMPIRE_SPRITE_X_FIGHT;
 	var this1 = this;
@@ -235,27 +240,28 @@ Vampire.prototype.fight = function (ctx){
 			} else {
 				start -= step;
 			}
-		}, 500);
+		}, 200);
 		
 }
-Vampire.prototype.beaten = function (ctx,totalDmg){
+Vampire.prototype.beaten = function (totalDmg){
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var positionX = this.getPositionX();
 	var positionY = this.getPositionY();
 	var step = VAMPIRE_STEP_BEATEN;
 	var start = VAMPIRE_SPRITE_X_BEATEN;
+	var ctx = this.getCtx();
 	var this1 = this;
 		var myTimer = window.setInterval(function() {
 			
 			ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
-
 			ctx.drawImage(image, start, VAMPIRE_SPRITE_Y_BEATEN, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN, positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
+			this1.drawCount();
+
 			if (start <= 540) {
 				start = VAMPIRE_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, VAMPIRE_WIDTH_BEATEN, VAMPIRE_HEIGHT_BEATEN);
 				ctx.drawImage(image, VAMPIRE_SPRITE_X, VAMPIRE_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				alert("Vampire took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + "  vampire died");
 				clearInterval(myTimer);
 			} else {
 				start -= step;
@@ -263,15 +269,24 @@ Vampire.prototype.beaten = function (ctx,totalDmg){
 		}, 500);
 }
 
-Vampire.prototype.takeDamage = function (ctx ,totalDmg){
+Vampire.prototype.takeDamage = function (totalDmg){
 	var totalHealth = this.getHealth()  + VAMPIRE_HEATH * (this.getCount() -1);
 	totalHealth -= totalDmg;
+	var ctx = this.getCtx();
+	this.drawCount();
 	if(totalHealth > 0 ){
+		this.getCtx().clearRect(this.getPositionX, this.getPositionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
 		this.setCount(parseInt(totalHealth / VAMPIRE_HEATH));
 		this.setHealth(parseInt(totalHealth % VAMPIRE_HEATH));
-		this.beaten(ctx, totalDmg);
-		console.log(totalHealth);
+		this.beaten(totalDmg);
 	}else{
-		this.die(ctx, totalDmg);
+		this.getCtx().clearRect(this.getPositionX, this.getPositionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
+		this.die(totalDmg);
+		this.setIsDead(true);
 	}
+}
+Vampire.prototype.drawCount = function (){
+	this.getCtx().font="20px Georgia";
+	this.getCtx().fillStyle="#ccc";
+	this.getCtx().fillText(this.getCount() ,this.getPositionX() + 10, this.getPositionY() + this.getHeight());
 }
