@@ -126,6 +126,7 @@ $(function(){
 						toX = offsetX - checkFunc[2] - 80;
 					}
 				}
+				
 				unit1.move(toX, toY , checkFunc[5]);
 			}
 			inControllRight = false;
@@ -159,7 +160,7 @@ function whichHero (x,y,heroesLeft){
 	for (var i in heroesLeft){
 		console.log(y , heroesLeft[i].getPositionX())
 		if(x > heroesLeft[i].getPositionX() && x < heroesLeft[i].getPositionRight() &&
-				y > heroesLeft[i].getPositionY() && y < heroesLeft[i].getPositionBottom()){
+				y > heroesLeft[i].getPositionY() && y < heroesLeft[i].getPositionBottom() && !heroesLeft[i].getIsDead()){
 			inControllLeft = heroesLeft[i];	
 		}
 	}
@@ -168,7 +169,7 @@ function whichHeroRight (x,y,heroesRight){
 	for (var i in heroesRight){
 		console.log(y , heroesRight[i].getPositionX())
 		if(x > heroesRight[i].getPositionX() && x < heroesRight[i].getPositionRight() &&
-				y > heroesRight[i].getPositionY() && y < heroesRight[i].getPositionBottom()){
+				y > heroesRight[i].getPositionY() && y < heroesRight[i].getPositionBottom() && !heroesRight[i].getIsDead()){
 			inControllRight = heroesRight[i];	
 		}
 	}

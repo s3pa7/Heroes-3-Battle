@@ -24,7 +24,7 @@ const DEATH_KNIGHT_STEP_FIGHT = 116;
 const DEATH_KNIGHT_SPRITE_X_BEATEN = 391;
 const DEATH_KNIGHT_SPRITE_Y_BEATEN = 811;
 const DEATH_KNIGHT_WIDTH_BEATEN = 99;
-const DEATH_KNIGHT_HEIGHT_BEATEN = 120;
+const DEATH_KNIGHT_HEIGHT_BEATEN = 110;
 const DEATH_KNIGHT_STEP_BEATEN = 99;
 
 const DEATH_KNIGHT_DMG = 40;
@@ -137,6 +137,7 @@ DeathKnight.prototype.draw = function (){
 	this.drawCount();
 }
 DeathKnight.prototype.move = function (toX, toY, atacking){
+	debugger;
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var count = 0;
@@ -190,6 +191,7 @@ DeathKnight.prototype.move = function (toX, toY, atacking){
 				start -= step;
 			}
 		}, 5000/speed);
+
 		this.setPositionX(toX);
 		this.setPositionY(toY);
 }
@@ -241,6 +243,7 @@ DeathKnight.prototype.fight = function (){
 }
 
 DeathKnight.prototype.beaten = function (totalDmg){
+	debugger;
 	var image = new Image();
 	image.src = this.getSprite().src;
 	var ctx = this.getCtx();
@@ -251,24 +254,23 @@ DeathKnight.prototype.beaten = function (totalDmg){
 	var this1 = this;
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
-			ctx.drawImage(image, start, DEATH_KNIGHT_SPRITE_Y_BEATEN, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN, positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
-			this1.drawCount();
+			ctx.drawImage(image, start, DEATH_KNIGHT_SPRITE_Y_BEATEN , DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN, positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
 			if (start <= 350) {
 				start = DEATH_KNIGHT_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, DEATH_KNIGHT_WIDTH_BEATEN, DEATH_KNIGHT_HEIGHT_BEATEN);
 				ctx.drawImage(image, DEATH_KNIGHT_SPRITE_X, DEATH_KNIGHT_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				this1.drawCount();
 				clearInterval(myTimer);
 			} else {
 				start -= step;
 			}
+			this1.drawCount();
 		}, 200);
 		
 }
 
 DeathKnight.prototype.takeDamage = function (totalDmg){
 	var totalHealth = this.getHealth()  + DEATH_KNIGHT_HEATH * (this.getCount() -1);
-	totalHealth -= totalDmg;
+	totalHealth -= totalDmg;	
 	this.drawCount();
 	this.drawScore(totalDmg);
 	if(totalHealth > 0 ){
@@ -286,20 +288,20 @@ DeathKnight.prototype.takeDamage = function (totalDmg){
 DeathKnight.prototype.drawCount = function (){
 	this.getCtx().font="20px Georgia";
 	this.getCtx().fillStyle="#ccc";
-	this.getCtx().fillText(this.getCount() ,this.getPositionRight() - 102,this.getPositionY() + this.getHeight());
+	this.getCtx().fillText(this.getCount() ,this.getPositionRight() - 95,this.getPositionY() + this.getHeight() - 20);
 
 }
 DeathKnight.prototype.drawScore = function (totalDmg){
 	var ctx = this.getCtx();
-	ctx.clearRect(20, 20, 255, 50);
-	var myTimer = window.setInterval(function() {
-	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "24px Helvetica";
-	ctx.textAlign = "center";
-	ctx.textBaseline = "top";
-	ctx.fillText("DeathKnight took : " +  totalDmg + "\n"+ " damage " + parseInt(totalDmg / DEATH_KNIGHT_HEATH) + "  archangel died", 255, 50);
-	clearInterval(myTimer);
-	//alert("Archangel took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + "  archangel died");
-	//ctx.clearRect(20, 20, 255, 50);
-	}, 200);	
+		ctx.fillStyle = "rgb(250, 250, 250)";
+		ctx.font = "24px Helvetica";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "top";
+		ctx.fillText("DeathKnight took : " +  totalDmg + "\n"+ " damage " + parseInt(totalDmg / DEATH_KNIGHT_HEATH) + "  DeathKnight died", 270, 50);
+		var myTimer = window.setInterval(function() {
+			clearInterval(myTimer);
+			ctx.clearRect(0, 40, 800, 80);
+		
+	}, 2000);
+
 }

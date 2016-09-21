@@ -274,6 +274,7 @@ Vampire.prototype.takeDamage = function (totalDmg){
 	totalHealth -= totalDmg;
 	var ctx = this.getCtx();
 	this.drawCount();
+	this.drawScore(totalDmg);
 	if(totalHealth > 0 ){
 		this.getCtx().clearRect(this.getPositionX, this.getPositionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
 		this.setCount(parseInt(totalHealth / VAMPIRE_HEATH));
@@ -288,5 +289,19 @@ Vampire.prototype.takeDamage = function (totalDmg){
 Vampire.prototype.drawCount = function (){
 	this.getCtx().font="20px Georgia";
 	this.getCtx().fillStyle="#ccc";
-	this.getCtx().fillText(this.getCount() ,this.getPositionX() + 10, this.getPositionY() + this.getHeight());
+	this.getCtx().fillText(this.getCount() ,this.getPositionRight() - 95,this.getPositionY() + this.getHeight() - 20);
+}
+Vampire.prototype.drawScore = function (totalDmg){
+	var ctx = this.getCtx();
+	ctx.clearRect(200, 40, 800, 80);
+	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.font = "24px Helvetica";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "top";
+	ctx.fillText("Vampire took : " +  totalDmg + "\n"+ " damage " + parseInt(totalDmg / ARCHANGEL_HEATH) + " Vampire died", 255, 50);
+	var myTimer = window.setInterval(function() {
+		clearInterval(myTimer);
+		ctx.clearRect(0, 40, 800, 80);
+	
+	}, 2000);
 }

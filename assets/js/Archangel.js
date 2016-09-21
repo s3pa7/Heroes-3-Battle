@@ -257,20 +257,19 @@ Archangel.prototype.beaten = function (totalDmg){
 		var myTimer = window.setInterval(function() {
 			ctx.clearRect(positionX, positionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
 			ctx.drawImage(image, start, ARCHANGEL_SPRITE_Y_BEATEN, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN, positionX, positionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
-			this1.drawCount();
+
 			if (start >= 470) {
 				start = ARCHANGEL_SPRITE_X_BEATEN;
 				ctx.clearRect(positionX, positionY, ARCHANGEL_WIDTH_BEATEN, ARCHANGEL_HEIGHT_BEATEN);
 				ctx.drawImage(image, ARCHANGEL_SPRITE_X, ARCHANGEL_SPRITE_Y, this1.getWidth() ,this1.getHeight(), this1.getPositionX(), this1.getPositionY(),this1.getWidth(),this1.getHeight());
-				this1.drawCount();
 				clearInterval(myTimer);
 			} else {
 				start += step;
 			}
+			this1.drawCount();
 		}, 200);
 }
 Archangel.prototype.takeDamage = function (totalDmg){
-		debugger
 		var totalHealth = this.getHealth()  + ARCHANGEL_HEATH * (this.getCount() -1);
 		totalHealth -= totalDmg;
 		var ctx = this.getCtx();
@@ -292,19 +291,19 @@ Archangel.prototype.takeDamage = function (totalDmg){
 Archangel.prototype.drawCount = function (){
 	this.getCtx().font="20px Georgia";
 	this.getCtx().fillStyle="#ccc";
-	this.getCtx().fillText(this.getCount() ,this.getPositionX() +80, this.getPositionY() + this.getHeight());
+	this.getCtx().fillText(this.getCount() ,this.getPositionRight() - 45,this.getPositionY() + this.getHeight() - 20);
 }
 Archangel.prototype.drawScore = function (totalDmg){
 	var ctx = this.getCtx();
-	ctx.clearRect(20, 20, 255, 50);
-	var myTimer = window.setInterval(function() {
+	ctx.clearRect(200, 40, 800, 80);
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "center";
 	ctx.textBaseline = "top";
-	ctx.fillText("Archangel took : " +  totalDmg + "\n"+ " damage " + parseInt(totalDmg / ARCHANGEL_HEATH) + "  archangel died", 255, 50);
-	clearInterval(myTimer);
-	//alert("Archangel took " +  totalDmg + "\n" + parseInt(totalDmg / CHAMPION1_HEATH) + "  archangel died");
-	//ctx.clearRect(20, 20, 255, 50);
-	}, 200);	
+	ctx.fillText("Archangel took : " +  totalDmg + "\n"+ " damage " + parseInt(totalDmg / ARCHANGEL_HEATH) + "  Archangel died", 255, 50);
+	var myTimer = window.setInterval(function() {
+		clearInterval(myTimer);
+		ctx.clearRect(0, 40, 800, 80);
+	
+	}, 2000);
 }
